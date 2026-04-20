@@ -18,7 +18,6 @@ import (
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 
 	"github.com/spegel-org/spegel/internal/option"
-	"github.com/spegel-org/spegel/internal/ptr"
 	"github.com/spegel-org/spegel/internal/resilient"
 	"github.com/spegel-org/spegel/pkg/httpx"
 	"github.com/spegel-org/spegel/pkg/metrics"
@@ -270,10 +269,10 @@ func (r *Registry) mirrorHandler(ctx context.Context, dist oci.DistributionPath,
 	if dist.Range != nil {
 		rng := &httpx.Range{}
 		if dist.Range.Start != nil {
-			rng.Start = ptr.To(*dist.Range.Start)
+			rng.Start = new(*dist.Range.Start)
 		}
 		if dist.Range.End != nil {
-			rng.End = ptr.To(*dist.Range.End)
+			rng.End = new(*dist.Range.End)
 		}
 		dist.Range = rng
 	}
@@ -328,11 +327,11 @@ func (r *Registry) mirrorHandler(ctx context.Context, dist oci.DistributionPath,
 				case oci.DistributionKindBlob:
 					if dist.Range == nil {
 						dist.Range = &httpx.Range{
-							Start: ptr.To(int64(0)),
-							End:   ptr.To(res.desc.Size - 1),
+							Start: new(int64(0)),
+							End:   new(res.desc.Size - 1),
 						}
 					}
-					dist.Range.Start = ptr.To(*dist.Range.Start + n)
+					dist.Range.Start = new(*dist.Range.Start + n)
 					log.Error(err, "copying of blob data failed")
 					return false
 				}

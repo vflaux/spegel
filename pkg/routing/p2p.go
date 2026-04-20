@@ -13,6 +13,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"time"
 
@@ -551,10 +552,8 @@ func createCid(key string) (cid.Cid, error) {
 
 func addrsEqual(a1, a2 []ma.Multiaddr) bool {
 	for _, a1Addr := range a1 {
-		for _, a2Addr := range a2 {
-			if a1Addr.Equal(a2Addr) {
-				return true
-			}
+		if slices.ContainsFunc(a2, a1Addr.Equal) {
+			return true
 		}
 	}
 	return false
